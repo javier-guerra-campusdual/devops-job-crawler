@@ -1,0 +1,79 @@
+# Directorio: terraform/main.tf
+provider "aws" {
+  region = "us-east-1"
+}
+
+module "networking" {
+  source = "./modules/networking"
+}
+
+module "s3" {
+  source = "./modules/s3"
+  bucket_name = "commoncrawl-data-bucket"
+}
+
+module "compute" {
+  source = "./modules/compute"
+  vpc_id = module.networking.vpc_id
+}
+
+output "s3_bucket" {
+  value = module.s3.bucket_name
+}
+
+# Directorio: terraform/modules/s3/main.tf
+resource "aws_s3_bucket" "data" {
+  bucket = var.bucket_name
+}
+
+# Directorio: scripts/process_wat.py
+import requests
+import json
+from elasticsearch import Elasticsearch
+
+# Conexión a Elasticsearch
+es = Elasticsearch(["http://elasticsearch-instance:9200"])
+
+def download_wat_files():
+    url = "https://commoncrawl.s3.amazonaws.com/crawl-data/CC-MAIN-2024-10/wet.paths"
+    response = requests.get(url)
+    files = response.text.split("\n")
+    return [f for f in files if f.endswith(".wat")]  # Filtrar archivos WAT
+
+def process_wat_file(wat_url):
+    response = requests.get(wat_url)
+    for line in response.text.split("\n"):
+        if "content-type: application/rss+xml" in line:
+            uri = extract_uri(line)
+            es.index(index="job_offers", document={"url": uri})
+
+def extract_uri(line):
+    return line.split(" ")[1]  # Lógica simplificada
+
+if __name__ == "__main__":
+    wat_files = download_wat_files()
+    for wat_file in wat_files:
+        process_wat_file(wat_file)
+
+# Directorio: .github/workflows/pipeline.yml
+name: Deploy Pipeline
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      
+      - name: Initialize Terraform
+        run: terraform init
+      
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
+      
+      - name: Run Data Processing
+        run: python scripts/process_wat.py
