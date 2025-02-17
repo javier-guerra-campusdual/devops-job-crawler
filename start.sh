@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ES_VERSION="8.17.2"
+ES_VERSION="8.12.1"
 ES_HOME="/opt/elasticsearch-${ES_VERSION}"
 
 # Check if Elasticsearch directory exists
