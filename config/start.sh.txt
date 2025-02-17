@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+
+echo "node.name: $NODENAME" >> /opt/elasticsearch-8.17.2/config/elasticsearch.yml
+
+if [ "$NODEMASTER" == "" ]; then
+	echo "node.master: false" >> /opt/elasticsearch-8.17.2/config/elasticsearch.yml
+else
+	echo "node.master: true" >> /opt/elasticsearch-8.17.2/config/elasticsearch.yml
+fi
+
+/opt/elasticsearch-8.17.2/bin/elasticsearch

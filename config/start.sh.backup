@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Set Java Home
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+
+# Define Elasticsearch home
+ES_HOME="/opt/elasticsearch-8.17.2"
+
+# Update configuration file with node name
+if [ -n "$NODENAME" ]; then
+    echo "node.name: $NODENAME" >> ${ES_HOME}/config/elasticsearch.yml
+fi
+
+# Configure master node settings
+if [ "$NODEMASTER" == "" ]; then
+    echo "node.master: false" >> ${ES_HOME}/config/elasticsearch.yml
+else
+    echo "node.master: true" >> ${ES_HOME}/config/elasticsearch.yml
+fi
+
+# Start Elasticsearch
+${ES_HOME}/bin/elasticsearch

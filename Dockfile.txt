@@ -1,0 +1,16 @@
+FROM ubuntu:20.04
+
+RUN apt-get --fix-missing update
+RUN apt-get -y install openjdk-11-jdk
+
+#COPY ./soft /opt
+COPY ./config /opt
+
+RUN chmod -R 777 /opt
+
+# Add none root user
+# Add none root user
+RUN useradd elasticsearch && echo "elasticsearch:campusdual" | chpasswd && adduser elasticsearch sudo
+USER elasticsearch
+
+CMD /opt/start.sh

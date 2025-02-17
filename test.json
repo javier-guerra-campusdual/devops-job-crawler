@@ -1,0 +1,28 @@
+{
+    "title": "Ejemplo de trabajo",
+    "company": "TechCorp",
+    "location": "Madrid, España",
+    "description": "Posición para desarrollador senior",
+    "requirements": [
+      "5+ años de experiencia en desarrollo",
+      "Conocimientos de Java y Python",
+      "Experiencia con Elasticsearch"
+    ],
+    "salary": {
+      "min": 35000,
+      "max": 45000,
+      "currency": "EUR"
+    },
+    "type": "full-time",
+    "posted_date": "2025-02-17",
+    "skills": [
+      "Java",
+      "Python",
+      "Elasticsearch",
+      "Docker"
+    ],
+    "contact": {
+      "email": "rrhh@techcorp.example.com",
+      "phone": "+34 123 456 789"
+    }
+  }

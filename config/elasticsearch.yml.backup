@@ -1,0 +1,4 @@
+cluster.name: my-crawler
+network.host: 0.0.0.0
+discovery.seed_hosts: [ "172.17.0.1", "172.17.0.2", "172.17.0.3", "172.17.0.4", "172.17.0.5" ]
+cluster.initial_master_nodes: [ "master-1" ]
